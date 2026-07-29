@@ -31,6 +31,9 @@
         "projectId": "5ffdd7d5-7af2-47d1-acfb-3f06a449dbbf"
       }
     },
-    "owner": "wornbeavers-team"
+    "owner": "wornbeavers-team",
+    "plugins": [
+      "@sentry/react-native"
+    ]
   }
 }

@@ -8,8 +8,11 @@ import { RootNavigator } from './src/navigation/RootNavigator';
 import { AppStore, makeStore } from './src/store';
 import { attachPersistence, loadPersistedState } from './src/store/persistence';
 import { colors } from './src/theme';
+import { initMonitoring, wrapRoot } from './src/utils/monitoring';
 
-export default function App() {
+initMonitoring();
+
+function App() {
   const [store, setStore] = useState<AppStore | null>(null);
 
   useEffect(() => {
@@ -41,6 +44,8 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
+
+export default wrapRoot(App);
 
 const styles = StyleSheet.create({
   root: {

@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { analyticsMiddleware } from './analyticsMiddleware';
 import type { PersistedState } from './persistence';
 import favoritesReducer, { favoritesInitialState } from './slices/favoritesSlice';
 import inboxReducer from './slices/inboxSlice';
@@ -19,6 +20,7 @@ export function makeStore(persisted: PersistedState = {}) {
       notifications: notificationsReducer,
       profile: profileReducer,
     },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(analyticsMiddleware),
     preloadedState: {
       favorites: {
         ...favoritesInitialState,

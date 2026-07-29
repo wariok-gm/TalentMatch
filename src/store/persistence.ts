@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Application, MyProfile } from '../types';
+import { reportError } from '../utils/monitoring';
 import type { AppStore, RootState } from './index';
 
 const KEYS = {
@@ -65,8 +66,9 @@ export function attachPersistence(store: AppStore): () => void {
       }
     }
     if (writes.length > 0) {
-      AsyncStorage.multiSet(writes).catch(() => {
-        // A failed persist should never crash a mock app.
+      AsyncStorage.multiSet(writes).catch((error) => {
+        // A failed persist should never crash the app — but it is worth reporting.
+        reportError(error, { keys: writes.map(([key]) => key) });
       });
     }
   };

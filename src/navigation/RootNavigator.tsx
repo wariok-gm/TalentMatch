@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import { DefaultTheme, NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { BlurView } from 'expo-blur';
 import React from 'react';
@@ -21,6 +21,7 @@ import { SearchScreen } from '../features/search/SearchScreen';
 import { TalentProfileScreen } from '../features/talent/TalentProfileScreen';
 import { useAppSelector } from '../store/hooks';
 import { colors } from '../theme';
+import { navigationIntegration } from '../utils/monitoring';
 import { RootStackParamList, TabParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -90,8 +91,13 @@ function Tabs() {
 }
 
 export function RootNavigator() {
+  const containerRef = useNavigationContainerRef();
   return (
-    <NavigationContainer theme={navTheme}>
+    <NavigationContainer
+      ref={containerRef}
+      theme={navTheme}
+      onReady={() => navigationIntegration.registerNavigationContainer(containerRef)}
+    >
       <Stack.Navigator
         screenOptions={{
           headerShadowVisible: false,

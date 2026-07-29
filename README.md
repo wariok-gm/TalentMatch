@@ -31,6 +31,7 @@ Every list implements the full state cycle: skeleton → content / empty / error
 | Navigation | React Navigation 7 — native stack + blur bottom tabs, native form sheets |
 | Motion | Reanimated 4 (shimmer, springs, layout transitions) + expo-haptics |
 | Persistence | AsyncStorage (favorites, saved jobs, applications, profile, read-state) |
+| Monitoring | Sentry — crash reporting, navigation performance tracing, and a Redux middleware that turns user actions into behavior breadcrumbs |
 | Visuals | expo-image (Pexels photos, retry + gradient fallback), expo-blur, expo-linear-gradient |
 
 ## Run it
@@ -41,6 +42,8 @@ npx expo start
 ```
 
 Then press `i` for the iOS simulator (or scan the QR code in Expo Go).
+
+Sentry is inert by default. To enable it, set `EXPO_PUBLIC_SENTRY_DSN=<your dsn>` in a `.env` file and restart the dev server — JS errors, navigation traces, and behavior breadcrumbs start flowing immediately (native crash reporting additionally needs a dev build).
 
 ## Architecture
 

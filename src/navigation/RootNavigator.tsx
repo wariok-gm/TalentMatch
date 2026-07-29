@@ -99,6 +99,11 @@ export function RootNavigator() {
           headerTitleStyle: { fontWeight: '600' },
           headerStyle: { backgroundColor: colors.bg },
           contentStyle: { backgroundColor: colors.bg },
+          // Chevron-only back button: the labeled variant ("< Tabs") renders a
+          // custom back item whose tap target is unreliable in
+          // react-native-screens; minimal mode uses the stock item.
+          headerBackButtonDisplayMode: 'minimal',
+          fullScreenGestureEnabled: true,
         }}
       >
         <Stack.Screen name="Tabs" component={Tabs} options={{ headerShown: false }} />

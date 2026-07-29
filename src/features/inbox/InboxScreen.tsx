@@ -30,7 +30,7 @@ function ConversationRow({
   return (
     <Animated.View entering={FadeInDown.delay(index * 40).springify().damping(18)}>
       <PressableScale style={styles.row} onPress={onPress}>
-        <Avatar initials={talent.initials} gradient={talent.gradient} verified={talent.verified} />
+        <Avatar initials={talent.initials} gradient={talent.gradient} uri={talent.photoUrl} verified={talent.verified} />
         <View style={styles.rowBody}>
           <Text style={[styles.name, unread && styles.nameUnread]} numberOfLines={1}>
             {talent.name}

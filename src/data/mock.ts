@@ -10,6 +10,7 @@ import {
   Talent,
   TalentRole,
 } from '../types';
+import { HEADSHOTS, JOB_COVERS, SCENES } from './photos';
 import { Rng } from './random';
 
 const FIRST_NAMES = [
@@ -188,7 +189,10 @@ function makeTalents(rng: Rng, count: number): Talent[] {
     names.add(name);
     const role = rng.pick(ROLES);
     const i = talents.length;
+    const headshots = HEADSHOTS[role];
     talents.push({
+      photoUrl: headshots[i % headshots.length],
+      portfolio: rng.sample(SCENES[role], 4),
       id: `talent-${i + 1}`,
       name,
       initials: initialsOf(name),
@@ -239,6 +243,7 @@ function makeJobs(rng: Rng, count: number): CastingJob[] {
       rolesNeeded: rng.sample(JOB_ROLE_NAMES, rng.int(1, 3)),
       applicants: rng.int(3, 240),
       gradient: rng.pick(gradients),
+      coverUrl: rng.pick(JOB_COVERS[jobType]),
       urgent: rng.chance(0.2),
     };
   });

@@ -30,8 +30,12 @@ export interface Talent {
   skills: string[];
   languages: string[];
   credits: Credit[];
-  /** Gradient pair for avatar + generated "photos" (fully offline, no image URLs). */
+  /** Gradient pair used as loading placeholder + fallback for photos. */
   gradient: [string, string];
+  /** Pexels headshot used for the avatar and card cover. */
+  photoUrl: string;
+  /** Pexels scene photos for the profile portfolio grid. */
+  portfolio: string[];
   verified: boolean;
   available: boolean;
   featured: boolean;
@@ -63,6 +67,8 @@ export interface CastingJob {
   rolesNeeded: string[];
   applicants: number;
   gradient: [string, string];
+  /** Pexels cover photo. */
+  coverUrl: string;
   urgent: boolean;
 }
 

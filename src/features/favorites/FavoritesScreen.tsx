@@ -36,6 +36,7 @@ function FavoriteRow({ talent, index, onPress, onUnfavorite }: RowProps) {
         <Avatar
           initials={talent.initials}
           gradient={talent.gradient}
+          uri={talent.photoUrl}
           size={56}
           verified={talent.verified}
         />

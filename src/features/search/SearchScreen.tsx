@@ -23,6 +23,7 @@ import {
   SectionHeader,
   SkeletonRow,
 } from '../../components';
+import { SCENES } from '../../data/photos';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   SearchFilters,
@@ -157,7 +158,7 @@ export function SearchScreen({ navigation }: TabScreenProps<'Search'>) {
           style={styles.resultRow}
           onPress={() => navigation.navigate('TalentProfile', { talentId: item.id })}
         >
-          <Avatar initials={item.initials} gradient={item.gradient} verified={item.verified} />
+          <Avatar initials={item.initials} gradient={item.gradient} uri={item.photoUrl} verified={item.verified} />
           <View style={styles.resultBody}>
             <Text style={type.headline} numberOfLines={1}>
               {item.name}
@@ -300,6 +301,7 @@ export function SearchScreen({ navigation }: TabScreenProps<'Search'>) {
               <PressableScale onPress={() => handleCategoryPress(role)}>
                 <GradientPhoto
                   gradient={gradients[(i * 3) % gradients.length]}
+                  uri={SCENES[role][0]}
                   borderRadius={radius.l}
                   icon={ROLE_ICONS[role]}
                   iconSize={34}

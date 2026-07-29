@@ -1,6 +1,6 @@
 # TalentMatch
 
-An iOS-26-style **mock casting app** built with Expo + TypeScript + Redux Toolkit. Fully offline by design — every talent, casting call, chat, and notification is generated locally with a seeded PRNG, so the app runs with zero backend, zero APIs, and zero remote images.
+An iOS-26-style **mock casting app** built with Expo + TypeScript + Redux Toolkit. No backend by design — every talent, casting call, chat, and notification is generated locally with a seeded PRNG. Photos are curated [Pexels](https://www.pexels.com) images served straight from their CDN, with gradient placeholders/fallbacks so the app stays fully usable offline.
 
 Built as a design-inspiration playground: liquid-glass surfaces, skeleton shimmer loading, optimistic UI everywhere, spring physics, and haptics.
 
@@ -31,7 +31,7 @@ Every list implements the full state cycle: skeleton → content / empty / error
 | Navigation | React Navigation 7 — native stack + blur bottom tabs, native form sheets |
 | Motion | Reanimated 4 (shimmer, springs, layout transitions) + expo-haptics |
 | Persistence | AsyncStorage (favorites, saved jobs, applications, profile, read-state) |
-| Visuals | expo-blur, expo-linear-gradient — all "photos" are generated gradients |
+| Visuals | expo-image (Pexels photos, retry + gradient fallback), expo-blur, expo-linear-gradient |
 
 ## Run it
 

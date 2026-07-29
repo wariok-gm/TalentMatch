@@ -39,6 +39,7 @@ export function FeaturedCarousel({ talents, onPressTalent }: Props) {
           >
             <GradientPhoto
               gradient={item.gradient}
+              uri={item.portfolio[0] ?? item.photoUrl}
               borderRadius={radius.xl}
               icon={ROLE_ICONS[item.role]}
               iconSize={56}

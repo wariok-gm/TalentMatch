@@ -45,6 +45,7 @@ function SavedJobRow({ job, application, index, onPress, onUnsave }: RowProps) {
       <PressableScale style={styles.card} onPress={onPress}>
         <GradientPhoto
           gradient={job.gradient}
+          uri={job.coverUrl}
           borderRadius={radius.m}
           style={styles.thumb}
           icon={JOB_ICONS[job.type]}

@@ -138,7 +138,7 @@ export function TalentProfileScreen({ route, navigation }: RootScreenProps<'Tale
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => void onRefresh()} />}
       >
         {/* Hero */}
-        <GradientPhoto gradient={talent.gradient} style={{ height: heroHeight }} />
+        <GradientPhoto gradient={talent.gradient} uri={talent.photoUrl} style={{ height: heroHeight }} />
 
         {/* Avatar overlapping hero */}
         <Animated.View entering={FadeIn.duration(400)} style={styles.avatarWrap}>
@@ -146,6 +146,7 @@ export function TalentProfileScreen({ route, navigation }: RootScreenProps<'Tale
             <Avatar
               initials={talent.initials}
               gradient={talent.gradient}
+              uri={talent.photoUrl}
               size={AVATAR_SIZE}
               verified={talent.verified}
             />
@@ -271,6 +272,7 @@ export function TalentProfileScreen({ route, navigation }: RootScreenProps<'Tale
               <GradientPhoto
                 key={PORTFOLIO_ICONS[i]}
                 gradient={gradient}
+                uri={talent.portfolio[i]}
                 icon={PORTFOLIO_ICONS[i]}
                 iconSize={36}
                 borderRadius={radius.l}

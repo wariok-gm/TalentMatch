@@ -48,7 +48,7 @@ export function ChatScreen({ route, navigation }: RootScreenProps<'Chat'>) {
   const replyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useLayoutEffect(() => {
-    navigation.setOptions({ title: talent?.name ?? 'Chat', headerBackTitle: '' });
+    navigation.setOptions({ title: talent?.name ?? 'Chat' });
   }, [navigation, talent?.name]);
 
   useFocusEffect(

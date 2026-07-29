@@ -121,6 +121,7 @@ export function ApplySheet({ navigation, route }: RootScreenProps<'Apply'>) {
           <Animated.View entering={FadeInDown.springify().damping(18)} style={styles.summaryRow}>
             <GradientPhoto
               gradient={job.gradient}
+              uri={job.coverUrl}
               style={styles.thumb}
               borderRadius={radius.m}
               icon={JOB_TYPE_ICONS[job.type]}

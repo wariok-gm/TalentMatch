@@ -30,6 +30,7 @@ export function TalentCard({ talent, index, favorite, onPress, onToggleFavorite 
       <PressableScale scaleTo={0.97} onPress={onPress} style={styles.card}>
         <GradientPhoto
           gradient={talent.gradient}
+          uri={talent.photoUrl}
           borderRadius={radius.xl}
           icon={ROLE_ICONS[talent.role]}
           iconSize={48}
@@ -50,7 +51,7 @@ export function TalentCard({ talent, index, favorite, onPress, onToggleFavorite 
         </GradientPhoto>
 
         <View style={styles.infoRow}>
-          <Avatar initials={talent.initials} gradient={talent.gradient} size={46} verified={talent.verified} />
+          <Avatar initials={talent.initials} gradient={talent.gradient} uri={talent.photoUrl} size={46} verified={talent.verified} />
           <View style={styles.infoText}>
             <View style={styles.nameRow}>
               <Text style={styles.name} numberOfLines={1}>

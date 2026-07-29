@@ -31,8 +31,8 @@ export function HeartButton({ active, onPress, size = 22, frosted = false, style
     }
     if (active) {
       scale.value = withSequence(
-        withSpring(1.35, { damping: 6, stiffness: 400 }),
-        withSpring(1, { damping: 12, stiffness: 300 }),
+        withSpring(1.18, { damping: 11, stiffness: 380 }),
+        withSpring(1, { damping: 18, stiffness: 300 }),
       );
     }
   }, [active, scale]);

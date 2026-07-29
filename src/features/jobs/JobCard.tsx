@@ -44,6 +44,7 @@ export function JobCard({ job, application, saved, index, onPress, onToggleSave 
         <View style={styles.card}>
           <GradientPhoto
             gradient={job.gradient}
+            uri={job.coverUrl}
             style={styles.strip}
             icon={JOB_TYPE_ICONS[job.type]}
             iconSize={28}

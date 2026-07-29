@@ -79,6 +79,7 @@ export function JobDetailScreen({ navigation, route }: RootScreenProps<'JobDetai
         <Animated.View entering={FadeInDown.springify().damping(18)}>
           <GradientPhoto
             gradient={job.gradient}
+            uri={job.coverUrl}
             style={styles.hero}
             borderRadius={radius.xl}
             icon={JOB_TYPE_ICONS[job.type]}

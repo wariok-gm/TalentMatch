@@ -39,3 +39,8 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# local agent docs (kept out of the public repo)
+CLAUDE.md
+AGENTS.md
+PLAN.md

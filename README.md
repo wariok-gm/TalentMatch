@@ -56,8 +56,6 @@ src/
   features/     one folder per feature (discover, search, talent, jobs, favorites, inbox, notifications, profile)
 ```
 
-See [PLAN.md](PLAN.md) for the full build plan and design decisions.
-
 ## License
 
 [MIT](LICENSE)

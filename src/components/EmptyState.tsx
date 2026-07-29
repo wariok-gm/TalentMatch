@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { colors, radius, spacing, type } from '../theme';
+import { ColorTokens, radius, spacing, TypeTokens, useTheme } from '../theme';
 import { PressableScale } from './PressableScale';
 
 interface Props {
@@ -13,6 +13,8 @@ interface Props {
 }
 
 export function EmptyState({ icon, title, message, actionLabel, onAction }: Props) {
+  const { colors, type } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type), [colors, type]);
   return (
     <View style={styles.container}>
       <View style={styles.iconCircle}>
@@ -29,7 +31,8 @@ export function EmptyState({ icon, title, message, actionLabel, onAction }: Prop
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ColorTokens, type: TypeTokens) {
+  return StyleSheet.create({
   container: {
     alignItems: 'center',
     paddingHorizontal: spacing.xxl,
@@ -62,8 +65,9 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
   },
   actionLabel: {
-    color: '#FFFFFF',
+    color: colors.bg,
     fontSize: 15,
     fontWeight: '600',
   },
-});
+  });
+}

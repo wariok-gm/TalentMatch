@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import { colors } from '../theme';
+import { ColorTokens, useTheme } from '../theme';
 
 interface Props {
   count: number;
@@ -9,6 +9,8 @@ interface Props {
 
 /** Small red unread-count badge (caps at 99+). Renders nothing for 0. */
 export function Badge({ count, style }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   if (count <= 0) return null;
   return (
     <View style={[styles.badge, style]}>
@@ -17,19 +19,21 @@ export function Badge({ count, style }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  badge: {
-    minWidth: 20,
-    height: 20,
-    borderRadius: 10,
-    paddingHorizontal: 5,
-    backgroundColor: colors.red,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '700',
-  },
-});
+function createStyles(colors: ColorTokens) {
+  return StyleSheet.create({
+    badge: {
+      minWidth: 20,
+      height: 20,
+      borderRadius: 10,
+      paddingHorizontal: 5,
+      backgroundColor: colors.red,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    text: {
+      color: '#FFFFFF',
+      fontSize: 12,
+      fontWeight: '700',
+    },
+  });
+}

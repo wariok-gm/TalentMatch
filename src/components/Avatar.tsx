@@ -1,9 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import { colors } from '../theme';
+import { ColorTokens, useTheme } from '../theme';
 
 interface Props {
   initials: string;
@@ -17,6 +17,8 @@ interface Props {
 
 /** Photo avatar with a gradient-initials placeholder/fallback. */
 export function Avatar({ initials, gradient, uri, size = 52, verified = false, style }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const badgeSize = Math.max(16, size * 0.32);
   // Retry transient CDN failures by remounting; fall back to initials after 3.
   const [attempt, setAttempt] = React.useState(0);
@@ -55,24 +57,26 @@ export function Avatar({ initials, gradient, uri, size = 52, verified = false, s
   );
 }
 
-const styles = StyleSheet.create({
-  circle: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  initials: {
-    color: 'rgba(255,255,255,0.95)',
-    fontWeight: '700',
-    letterSpacing: 0.5,
-  },
-  badge: {
-    position: 'absolute',
-    right: -1,
-    bottom: -1,
-    backgroundColor: colors.blue,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: colors.card,
-  },
-});
+function createStyles(colors: ColorTokens) {
+  return StyleSheet.create({
+    circle: {
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    initials: {
+      color: 'rgba(255,255,255,0.95)',
+      fontWeight: '700',
+      letterSpacing: 0.5,
+    },
+    badge: {
+      position: 'absolute',
+      right: -1,
+      bottom: -1,
+      backgroundColor: colors.blue,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 2,
+      borderColor: colors.card,
+    },
+  });
+}

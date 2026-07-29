@@ -9,6 +9,7 @@ import {
   Text,
   useWindowDimensions,
   View,
+  ViewStyle,
 } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -26,7 +27,7 @@ import { RootScreenProps } from '../../navigation/types';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { toggleFavorite } from '../../store/slices/favoritesSlice';
 import { loadTalent } from '../../store/slices/talentsSlice';
-import { colors, gradients, radius, shadows, spacing, type } from '../../theme';
+import { ColorTokens, gradients, radius, spacing, TypeTokens, useTheme } from '../../theme';
 import { formatCount, formatHeight, formatRate } from '../../utils/format';
 import { haptic } from '../../utils/haptics';
 
@@ -41,6 +42,8 @@ function hashString(value: string): number {
 
 export function TalentProfileScreen({ route, navigation }: RootScreenProps<'TalentProfile'>) {
   const { talentId } = route.params;
+  const { colors, type, shadows, scheme } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   const dispatch = useAppDispatch();
   const insets = useSafeAreaInsets();
   const { height: screenHeight, width: screenWidth } = useWindowDimensions();
@@ -300,7 +303,7 @@ export function TalentProfileScreen({ route, navigation }: RootScreenProps<'Tale
       {/* Sticky bottom CTA */}
       <View style={[styles.ctaBar, { paddingBottom: Math.max(insets.bottom, spacing.m) }]}>
         {Platform.OS === 'ios' ? (
-          <BlurView intensity={80} tint="extraLight" style={StyleSheet.absoluteFill} />
+          <BlurView intensity={80} tint={scheme === 'dark' ? 'dark' : 'extraLight'} style={StyleSheet.absoluteFill} />
         ) : (
           <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.glass }]} />
         )}
@@ -338,6 +341,8 @@ function FloatingCircleButton({
   onPress: () => void;
   style?: object;
 }) {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   return (
     <PressableScale
       hapticOnPress={false}
@@ -354,6 +359,8 @@ function FloatingCircleButton({
 }
 
 function DetailCell({ label, value }: { label: string; value: string }) {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   return (
     <View style={styles.detailCell}>
       <Text style={styles.detailLabel}>{label}</Text>
@@ -363,6 +370,8 @@ function DetailCell({ label, value }: { label: string; value: string }) {
 }
 
 function ProfileSkeleton({ heroHeight }: { heroHeight: number }) {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   return (
     <View>
       <Skeleton width="100%" height={heroHeight} borderRadius={0} />
@@ -395,7 +404,8 @@ function ProfileSkeleton({ heroHeight }: { heroHeight: number }) {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ColorTokens, type: TypeTokens, shadows: Record<string, ViewStyle>) {
+  return StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.bg,
@@ -609,7 +619,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
   },
   messageLabel: {
-    color: '#FFFFFF',
+    color: colors.bg,
     fontSize: 17,
     fontWeight: '600',
   },
@@ -625,4 +635,5 @@ const styles = StyleSheet.create({
     borderColor: colors.separator,
     ...shadows.soft,
   },
-});
+  });
+}

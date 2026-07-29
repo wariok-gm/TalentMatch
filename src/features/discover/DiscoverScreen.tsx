@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { FlatList, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, RefreshControl, ScrollView, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Chip,
@@ -17,7 +17,8 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { toggleFavorite } from '../../store/slices/favoritesSlice';
 import { loadNotifications } from '../../store/slices/notificationsSlice';
 import { loadDiscover, setRoleFilter } from '../../store/slices/talentsSlice';
-import { colors, radius, shadows, spacing, type } from '../../theme';
+import { radius, spacing, useTheme } from '../../theme';
+import type { ColorTokens, TypeTokens } from '../../theme';
 import { Talent, TalentRole } from '../../types';
 import { haptic } from '../../utils/haptics';
 import { FeaturedCarousel } from './FeaturedCarousel';
@@ -42,6 +43,8 @@ function greetingForHour(hour: number): string {
 }
 
 function SkeletonCard() {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   return (
     <View style={styles.skeletonCard}>
       <Skeleton height={220} borderRadius={radius.xl} />
@@ -58,6 +61,8 @@ export function DiscoverScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const insets = useSafeAreaInsets();
   const dispatch = useAppDispatch();
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
 
   const { entities, feedIds, status, hasMore, error, roleFilter } = useAppSelector(
     (state) => state.talents,
@@ -215,7 +220,8 @@ export function DiscoverScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ColorTokens, type: TypeTokens, shadows: Record<string, ViewStyle>) {
+  return StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.bg,
@@ -280,4 +286,5 @@ const styles = StyleSheet.create({
     marginTop: spacing.m,
     paddingBottom: spacing.xs,
   },
-});
+  });
+}

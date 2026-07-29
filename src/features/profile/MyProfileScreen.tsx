@@ -1,21 +1,25 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Avatar, PressableScale, Skeleton } from '../../components';
 import { TabScreenProps } from '../../navigation/types';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { loadJob } from '../../store/slices/jobsSlice';
-import { colors, radius, shadows, spacing, type } from '../../theme';
+import { ColorTokens, radius, spacing, TypeTokens, useTheme } from '../../theme';
 import { Application, ApplicationStatus } from '../../types';
 import { timeAgo } from '../../utils/format';
 
-const STATUS_CONFIG: Record<ApplicationStatus, { label: string; bg: string; color: string }> = {
-  submitted: { label: 'Applied', bg: colors.tintSoft, color: colors.tint },
-  in_review: { label: 'In review', bg: colors.orangeSoft, color: colors.orange },
-  shortlisted: { label: 'Shortlisted', bg: colors.greenSoft, color: colors.green },
-};
+function getStatusConfig(
+  colors: ColorTokens,
+): Record<ApplicationStatus, { label: string; bg: string; color: string }> {
+  return {
+    submitted: { label: 'Applied', bg: colors.tintSoft, color: colors.tint },
+    in_review: { label: 'In review', bg: colors.orangeSoft, color: colors.orange },
+    shortlisted: { label: 'Shortlisted', bg: colors.greenSoft, color: colors.green },
+  };
+}
 
 const MENU_ITEMS: Array<{
   icon: keyof typeof Ionicons.glyphMap;
@@ -29,6 +33,9 @@ const MENU_ITEMS: Array<{
 
 export function MyProfileScreen({ navigation }: TabScreenProps<'Profile'>) {
   const insets = useSafeAreaInsets();
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
+  const STATUS_CONFIG = useMemo(() => getStatusConfig(colors), [colors]);
   const dispatch = useAppDispatch();
   const profile = useAppSelector((state) => state.profile.profile);
   const favoritesCount = useAppSelector((state) => state.favorites.ids.length);
@@ -177,7 +184,8 @@ export function MyProfileScreen({ navigation }: TabScreenProps<'Profile'>) {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ColorTokens, type: TypeTokens, shadows: Record<string, ViewStyle>) {
+  return StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.bg,
@@ -233,7 +241,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
   },
   editPillLabel: {
-    color: '#FFFFFF',
+    color: colors.bg,
     fontSize: 15,
     fontWeight: '600',
   },
@@ -349,4 +357,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: spacing.xxl,
   },
-});
+  });
+}

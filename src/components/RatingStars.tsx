@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { colors } from '../theme';
+import { ColorTokens, useTheme } from '../theme';
 
 interface Props {
   rating: number;
@@ -11,6 +11,8 @@ interface Props {
 
 /** Compact "★ 4.8 (120)" rating display. */
 export function RatingStars({ rating, reviewsCount, size = 13 }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.row}>
       <Ionicons name="star" size={size} color={colors.orange} />
@@ -22,17 +24,19 @@ export function RatingStars({ rating, reviewsCount, size = 13 }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 3,
-  },
-  rating: {
-    fontWeight: '700',
-    color: colors.label,
-  },
-  count: {
-    color: colors.secondaryLabel,
-  },
-});
+function createStyles(colors: ColorTokens) {
+  return StyleSheet.create({
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 3,
+    },
+    rating: {
+      fontWeight: '700',
+      color: colors.label,
+    },
+    count: {
+      color: colors.secondaryLabel,
+    },
+  });
+}

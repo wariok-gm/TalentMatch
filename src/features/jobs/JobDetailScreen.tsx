@@ -1,13 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useMemo } from 'react';
+import { ScrollView, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Chip, GradientPhoto, PressableScale, Skeleton } from '../../components';
 import { RootScreenProps } from '../../navigation/types';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { loadJob } from '../../store/slices/jobsSlice';
-import { colors, radius, shadows, spacing, type } from '../../theme';
+import { radius, spacing, useTheme, type ColorTokens, type TypeTokens } from '../../theme';
 import { daysUntil, formatCount, formatPay, timeAgo } from '../../utils/format';
 import { JOB_TYPE_ICONS } from './JobCard';
 import { StatusTimeline } from './StatusTimeline';
@@ -21,6 +21,8 @@ function InfoCell({
   label: string;
   value: string;
 }) {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   return (
     <View style={styles.infoCell}>
       <View style={styles.infoIcon}>
@@ -37,6 +39,8 @@ function InfoCell({
 }
 
 function DetailSkeleton() {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   return (
     <View style={styles.content}>
       <Skeleton width="100%" height={200} borderRadius={radius.xl} />
@@ -55,6 +59,8 @@ function DetailSkeleton() {
 export function JobDetailScreen({ navigation, route }: RootScreenProps<'JobDetail'>) {
   const { jobId } = route.params;
   const insets = useSafeAreaInsets();
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   const dispatch = useAppDispatch();
   const job = useAppSelector((state) => state.jobs.entities[jobId]);
   const application = useAppSelector((state) => state.jobs.applications[jobId]);
@@ -170,7 +176,8 @@ export function JobDetailScreen({ navigation, route }: RootScreenProps<'JobDetai
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ColorTokens, type: TypeTokens, shadows: Record<string, ViewStyle>) {
+  return StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.bg,
@@ -299,8 +306,9 @@ const styles = StyleSheet.create({
     ...shadows.float,
   },
   applyLabel: {
-    color: '#FFFFFF',
+    color: colors.bg,
     fontSize: 17,
     fontWeight: '700',
   },
-});
+  });
+}

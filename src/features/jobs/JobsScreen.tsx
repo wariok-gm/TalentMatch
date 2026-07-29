@@ -1,12 +1,20 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { FlatList, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  ViewStyle,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Chip, EmptyState, ErrorView, FooterSpinner, PressableScale, Skeleton } from '../../components';
 import { TabScreenProps } from '../../navigation/types';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { loadJobs, setTypeFilter, toggleSaveJob } from '../../store/slices/jobsSlice';
-import { colors, radius, shadows, spacing, type } from '../../theme';
+import { radius, spacing, useTheme, type ColorTokens } from '../../theme';
 import { CastingJob, JobType } from '../../types';
 import { haptic } from '../../utils/haptics';
 import { JobCard } from './JobCard';
@@ -22,6 +30,8 @@ const TYPE_FILTERS: (JobType | 'All')[] = [
 ];
 
 function JobCardSkeleton() {
+  const { colors, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, shadows), [colors, shadows]);
   return (
     <View style={styles.skeletonCard}>
       <Skeleton width="100%" height={64} borderRadius={0} />
@@ -37,6 +47,8 @@ function JobCardSkeleton() {
 
 export function JobsScreen({ navigation }: TabScreenProps<'Castings'>) {
   const insets = useSafeAreaInsets();
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, shadows), [colors, shadows]);
   const dispatch = useAppDispatch();
   const { entities, feedIds, status, error, hasMore, typeFilter, savedIds, applications } =
     useAppSelector((state) => state.jobs);
@@ -162,51 +174,53 @@ export function JobsScreen({ navigation }: TabScreenProps<'Castings'>) {
   );
 }
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: colors.bg,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.xl,
-    marginBottom: spacing.m,
-  },
-  frostedButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.glass,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.separator,
-    alignItems: 'center',
-    justifyContent: 'center',
-    ...shadows.soft,
-  },
-  chipsScroll: {
-    flexGrow: 0,
-  },
-  chipsRow: {
-    paddingHorizontal: spacing.xl,
-    gap: spacing.s,
-    paddingBottom: spacing.l,
-  },
-  listContent: {
-    paddingTop: spacing.xs,
-    paddingBottom: 110,
-  },
-  skeletonCard: {
-    marginHorizontal: spacing.xl,
-    marginBottom: spacing.l,
-    borderRadius: radius.xl,
-    borderCurve: 'continuous',
-    overflow: 'hidden',
-    backgroundColor: colors.card,
-  },
-  skeletonBody: {
-    padding: spacing.l,
-    gap: spacing.s,
-  },
-});
+function createStyles(colors: ColorTokens, shadows: Record<string, ViewStyle>) {
+  return StyleSheet.create({
+    screen: {
+      flex: 1,
+      backgroundColor: colors.bg,
+    },
+    titleRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: spacing.xl,
+      marginBottom: spacing.m,
+    },
+    frostedButton: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: colors.glass,
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: colors.separator,
+      alignItems: 'center',
+      justifyContent: 'center',
+      ...shadows.soft,
+    },
+    chipsScroll: {
+      flexGrow: 0,
+    },
+    chipsRow: {
+      paddingHorizontal: spacing.xl,
+      gap: spacing.s,
+      paddingBottom: spacing.l,
+    },
+    listContent: {
+      paddingTop: spacing.xs,
+      paddingBottom: 110,
+    },
+    skeletonCard: {
+      marginHorizontal: spacing.xl,
+      marginBottom: spacing.l,
+      borderRadius: radius.xl,
+      borderCurve: 'continuous',
+      overflow: 'hidden',
+      backgroundColor: colors.card,
+    },
+    skeletonBody: {
+      padding: spacing.l,
+      gap: spacing.s,
+    },
+  });
+}

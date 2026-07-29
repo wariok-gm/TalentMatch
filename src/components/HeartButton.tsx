@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Pressable, StyleProp, StyleSheet, ViewStyle } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -7,7 +7,7 @@ import Animated, {
   withSequence,
   withSpring,
 } from 'react-native-reanimated';
-import { colors } from '../theme';
+import { useTheme } from '../theme';
 import { haptic } from '../utils/haptics';
 
 interface Props {
@@ -21,6 +21,8 @@ interface Props {
 
 /** Favorite toggle with an overshoot pop when it becomes active. */
 export function HeartButton({ active, onPress, size = 22, frosted = false, style }: Props) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(), []);
   const scale = useSharedValue(1);
   const mounted = useRef(false);
 
@@ -59,10 +61,12 @@ export function HeartButton({ active, onPress, size = 22, frosted = false, style
   );
 }
 
-const styles = StyleSheet.create({
-  frosted: {
-    backgroundColor: 'rgba(0,0,0,0.22)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+function createStyles() {
+  return StyleSheet.create({
+    frosted: {
+      backgroundColor: 'rgba(0,0,0,0.22)',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  });
+}

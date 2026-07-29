@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -8,6 +8,7 @@ import {
   Text,
   TextInput,
   View,
+  ViewStyle,
 } from 'react-native';
 import Animated, { FadeIn, FadeInDown, ZoomIn } from 'react-native-reanimated';
 import { GradientPhoto, PressableScale, Skeleton } from '../../components';
@@ -16,7 +17,7 @@ import type { AppDispatch } from '../../store';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { advanceApplication, applyToJob, loadJob } from '../../store/slices/jobsSlice';
 import { pushNotification } from '../../store/slices/notificationsSlice';
-import { colors, radius, shadows, spacing, type } from '../../theme';
+import { ColorTokens, radius, spacing, TypeTokens, useTheme } from '../../theme';
 import { haptic } from '../../utils/haptics';
 import { JOB_TYPE_ICONS } from './JobCard';
 
@@ -63,6 +64,8 @@ function runApplicationPipeline(
 
 export function ApplySheet({ navigation, route }: RootScreenProps<'Apply'>) {
   const { jobId } = route.params;
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   const dispatch = useAppDispatch();
   const job = useAppSelector((state) => state.jobs.entities[jobId]);
   const [note, setNote] = useState('');
@@ -171,7 +174,8 @@ export function ApplySheet({ navigation, route }: RootScreenProps<'Apply'>) {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ColorTokens, type: TypeTokens, shadows: Record<string, ViewStyle>) {
+  return StyleSheet.create({
   flex: {
     flex: 1,
   },
@@ -232,7 +236,7 @@ const styles = StyleSheet.create({
     ...shadows.card,
   },
   submitLabel: {
-    color: '#FFFFFF',
+    color: colors.bg,
     fontSize: 17,
     fontWeight: '700',
   },
@@ -265,4 +269,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 21,
   },
-});
+  });
+}

@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useEffect, useMemo } from 'react';
+import { StyleSheet, View, ViewStyle } from 'react-native';
 import Animated, {
   FadeInUp,
   useAnimatedStyle,
@@ -9,9 +9,11 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
-import { colors, radius, shadows, spacing } from '../../theme';
+import { ColorTokens, radius, spacing, useTheme } from '../../theme';
 
 function Dot({ delay }: { delay: number }) {
+  const { colors, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, shadows), [colors, shadows]);
   const opacity = useSharedValue(0.25);
 
   useEffect(() => {
@@ -35,6 +37,8 @@ function Dot({ delay }: { delay: number }) {
 
 /** "The other side is typing" bubble — three staggered pulsing dots. */
 export function TypingIndicator() {
+  const { colors, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, shadows), [colors, shadows]);
   return (
     <Animated.View entering={FadeInUp.springify().damping(18)} style={styles.row}>
       <View style={styles.bubble}>
@@ -46,7 +50,8 @@ export function TypingIndicator() {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ColorTokens, shadows: Record<string, ViewStyle>) {
+  return StyleSheet.create({
   row: {
     alignSelf: 'flex-start',
     marginVertical: 3,
@@ -69,4 +74,5 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     backgroundColor: colors.secondaryLabel,
   },
-});
+  });
+}

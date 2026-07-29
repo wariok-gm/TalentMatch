@@ -1,21 +1,25 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { RefreshControl, StyleSheet, Text, View } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { RefreshControl, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import Animated, { FadeInDown, FadeOut, LinearTransition } from 'react-native-reanimated';
 import { EmptyState, ErrorView, GradientPhoto, PressableScale, Skeleton } from '../../components';
 import { RootScreenProps } from '../../navigation/types';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { loadJob, toggleSaveJob } from '../../store/slices/jobsSlice';
-import { colors, radius, shadows, spacing, type } from '../../theme';
+import { ColorTokens, radius, spacing, TypeTokens, useTheme } from '../../theme';
 import { Application, ApplicationStatus, CastingJob, JobType } from '../../types';
 import { daysUntil, formatPay } from '../../utils/format';
 import { haptic } from '../../utils/haptics';
 
-const STATUS_META: Record<ApplicationStatus, { label: string; bg: string; fg: string }> = {
-  submitted: { label: 'Applied', bg: colors.tintSoft, fg: colors.tint },
-  in_review: { label: 'In review', bg: colors.orangeSoft, fg: colors.orange },
-  shortlisted: { label: 'Shortlisted', bg: colors.greenSoft, fg: colors.green },
-};
+function getStatusMeta(
+  colors: ColorTokens,
+): Record<ApplicationStatus, { label: string; bg: string; fg: string }> {
+  return {
+    submitted: { label: 'Applied', bg: colors.tintSoft, fg: colors.tint },
+    in_review: { label: 'In review', bg: colors.orangeSoft, fg: colors.orange },
+    shortlisted: { label: 'Shortlisted', bg: colors.greenSoft, fg: colors.green },
+  };
+}
 
 const JOB_ICONS: Record<JobType, keyof typeof Ionicons.glyphMap> = {
   Film: 'film',
@@ -35,6 +39,9 @@ interface RowProps {
 }
 
 function SavedJobRow({ job, application, index, onPress, onUnsave }: RowProps) {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
+  const STATUS_META = useMemo(() => getStatusMeta(colors), [colors]);
   const closesIn = daysUntil(job.deadline);
   return (
     <Animated.View
@@ -94,6 +101,8 @@ function SavedJobRow({ job, application, index, onPress, onUnsave }: RowProps) {
 }
 
 function SkeletonCard({ index }: { index: number }) {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   return (
     <Animated.View
       entering={FadeInDown.delay(index * 40)}
@@ -112,6 +121,8 @@ function SkeletonCard({ index }: { index: number }) {
 }
 
 export function SavedJobsScreen({ navigation }: RootScreenProps<'SavedJobs'>) {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   const dispatch = useAppDispatch();
   const savedIds = useAppSelector((state) => state.jobs.savedIds);
   const entities = useAppSelector((state) => state.jobs.entities);
@@ -214,7 +225,8 @@ export function SavedJobsScreen({ navigation }: RootScreenProps<'SavedJobs'>) {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ColorTokens, type: TypeTokens, shadows: Record<string, ViewStyle>) {
+  return StyleSheet.create({
   content: {
     paddingHorizontal: spacing.l,
     paddingTop: spacing.m,
@@ -283,4 +295,5 @@ const styles = StyleSheet.create({
   bookmark: {
     paddingTop: 2,
   },
-});
+  });
+}

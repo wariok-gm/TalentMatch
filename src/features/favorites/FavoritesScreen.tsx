@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { RefreshControl, StyleSheet, Text, View } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { RefreshControl, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import Animated, { FadeInDown, FadeOut, LinearTransition } from 'react-native-reanimated';
 import {
   Avatar,
@@ -14,7 +14,7 @@ import { RootScreenProps } from '../../navigation/types';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { toggleFavorite } from '../../store/slices/favoritesSlice';
 import { loadTalent } from '../../store/slices/talentsSlice';
-import { colors, radius, shadows, spacing, type } from '../../theme';
+import { ColorTokens, radius, spacing, TypeTokens, useTheme } from '../../theme';
 import { Talent } from '../../types';
 import { formatRate } from '../../utils/format';
 
@@ -26,6 +26,8 @@ interface RowProps {
 }
 
 function FavoriteRow({ talent, index, onPress, onUnfavorite }: RowProps) {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   return (
     <Animated.View
       entering={FadeInDown.delay(index * 40).springify().damping(18)}
@@ -59,6 +61,8 @@ function FavoriteRow({ talent, index, onPress, onUnfavorite }: RowProps) {
 }
 
 function SkeletonCard({ index }: { index: number }) {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   return (
     <Animated.View
       entering={FadeInDown.delay(index * 40)}
@@ -72,6 +76,8 @@ function SkeletonCard({ index }: { index: number }) {
 }
 
 export function FavoritesScreen({ navigation }: RootScreenProps<'Favorites'>) {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   const dispatch = useAppDispatch();
   const ids = useAppSelector((state) => state.favorites.ids);
   const entities = useAppSelector((state) => state.talents.entities);
@@ -170,7 +176,8 @@ export function FavoritesScreen({ navigation }: RootScreenProps<'Favorites'>) {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ColorTokens, type: TypeTokens, shadows: Record<string, ViewStyle>) {
+  return StyleSheet.create({
   content: {
     paddingHorizontal: spacing.l,
     paddingTop: spacing.m,
@@ -213,4 +220,5 @@ const styles = StyleSheet.create({
     ...type.subheadBold,
     color: colors.tint,
   },
-});
+  });
+}

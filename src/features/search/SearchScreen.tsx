@@ -10,6 +10,7 @@ import {
   Text,
   TextInput,
   View,
+  ViewStyle,
 } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -33,7 +34,7 @@ import {
   setFilters,
   setQuery,
 } from '../../store/slices/searchSlice';
-import { colors, gradients, radius, shadows, spacing, type } from '../../theme';
+import { ColorTokens, gradients, radius, spacing, TypeTokens, useTheme } from '../../theme';
 import { Talent, TalentRole } from '../../types';
 import { formatRate } from '../../utils/format';
 import { haptic } from '../../utils/haptics';
@@ -72,6 +73,8 @@ function nextMaxRate(current?: number): number | undefined {
 
 export function SearchScreen({ navigation }: TabScreenProps<'Search'>) {
   const insets = useSafeAreaInsets();
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   const dispatch = useAppDispatch();
   const { query, filters, resultIds, status, recent } = useAppSelector((state) => state.search);
   const entities = useAppSelector((state) => state.talents.entities);
@@ -175,7 +178,7 @@ export function SearchScreen({ navigation }: TabScreenProps<'Search'>) {
         </PressableScale>
       </Animated.View>
     ),
-    [navigation],
+    [navigation, styles, colors],
   );
 
   const header = (
@@ -354,7 +357,8 @@ export function SearchScreen({ navigation }: TabScreenProps<'Search'>) {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ColorTokens, type: TypeTokens, shadows: Record<string, ViewStyle>) {
+  return StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.bg,
@@ -487,4 +491,5 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: colors.tint,
   },
-});
+  });
+}

@@ -1,9 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useMemo } from 'react';
+import { StyleSheet, Text, View, ViewStyle } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { GradientPhoto, PressableScale } from '../../components';
-import { colors, radius, shadows, spacing, type } from '../../theme';
+import { ColorTokens, radius, spacing, TypeTokens, useTheme } from '../../theme';
 import { Application, ApplicationStatus, CastingJob, JobType } from '../../types';
 import { daysUntil, formatCount, formatPay } from '../../utils/format';
 
@@ -16,14 +16,15 @@ export const JOB_TYPE_ICONS: Record<JobType, keyof typeof Ionicons.glyphMap> = {
   Voiceover: 'mic',
 };
 
-export const STATUS_META: Record<
-  ApplicationStatus,
-  { label: string; color: string; bg: string }
-> = {
-  submitted: { label: 'Applied', color: colors.tint, bg: colors.tintSoft },
-  in_review: { label: 'In review', color: colors.orange, bg: colors.orangeSoft },
-  shortlisted: { label: 'Shortlisted', color: colors.green, bg: colors.greenSoft },
-};
+function getStatusMeta(
+  colors: ColorTokens,
+): Record<ApplicationStatus, { label: string; color: string; bg: string }> {
+  return {
+    submitted: { label: 'Applied', color: colors.tint, bg: colors.tintSoft },
+    in_review: { label: 'In review', color: colors.orange, bg: colors.orangeSoft },
+    shortlisted: { label: 'Shortlisted', color: colors.green, bg: colors.greenSoft },
+  };
+}
 
 interface Props {
   job: CastingJob;
@@ -35,6 +36,9 @@ interface Props {
 }
 
 export function JobCard({ job, application, saved, index, onPress, onToggleSave }: Props) {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
+  const STATUS_META = useMemo(() => getStatusMeta(colors), [colors]);
   const status = application ? STATUS_META[application.status] : undefined;
   const closesIn = daysUntil(job.deadline);
 
@@ -109,7 +113,8 @@ export function JobCard({ job, application, saved, index, onPress, onToggleSave 
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ColorTokens, type: TypeTokens, shadows: Record<string, ViewStyle>) {
+  return StyleSheet.create({
   shadowWrap: {
     borderRadius: radius.xl,
     backgroundColor: colors.card,
@@ -184,4 +189,5 @@ const styles = StyleSheet.create({
   spacer: {
     flex: 1,
   },
-});
+  });
+}

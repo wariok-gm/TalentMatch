@@ -7,13 +7,14 @@ import {
   Text,
   TextInput,
   View,
+  ViewStyle,
 } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Avatar, PressableScale } from '../../components';
 import { RootScreenProps } from '../../navigation/types';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { updateProfile } from '../../store/slices/profileSlice';
-import { colors, radius, shadows, spacing, type } from '../../theme';
+import { ColorTokens, radius, spacing, TypeTokens, useTheme } from '../../theme';
 import { haptic } from '../../utils/haptics';
 
 function initialsFrom(name: string, fallback: string): string {
@@ -36,6 +37,8 @@ interface FieldProps {
 }
 
 function Field({ label, value, onChangeText, placeholder, multiline = false }: FieldProps) {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   return (
     <View style={styles.field}>
       <Text style={styles.fieldLabel}>{label}</Text>
@@ -52,6 +55,8 @@ function Field({ label, value, onChangeText, placeholder, multiline = false }: F
 }
 
 export function EditProfileScreen({ navigation }: RootScreenProps<'EditProfile'>) {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   const dispatch = useAppDispatch();
   const profile = useAppSelector((state) => state.profile.profile);
 
@@ -136,7 +141,8 @@ export function EditProfileScreen({ navigation }: RootScreenProps<'EditProfile'>
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ColorTokens, type: TypeTokens, shadows: Record<string, ViewStyle>) {
+  return StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.bg,
@@ -188,8 +194,9 @@ const styles = StyleSheet.create({
     opacity: 0.35,
   },
   saveLabel: {
-    color: '#FFFFFF',
+    color: colors.bg,
     fontSize: 16,
     fontWeight: '600',
   },
-});
+  });
+}

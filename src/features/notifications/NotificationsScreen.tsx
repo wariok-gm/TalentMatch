@@ -1,27 +1,28 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useCallback, useEffect, useLayoutEffect, useMemo } from 'react';
-import { RefreshControl, SectionList, StyleSheet, Text, View } from 'react-native';
+import { RefreshControl, SectionList, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { EmptyState, ErrorView, PressableScale, SkeletonRow } from '../../components';
 import { RootScreenProps } from '../../navigation/types';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { loadNotifications, markAllRead, markRead } from '../../store/slices/notificationsSlice';
-import { colors, radius, shadows, spacing, type } from '../../theme';
+import { ColorTokens, radius, spacing, TypeTokens, useTheme } from '../../theme';
 import { AppNotification, NotificationType } from '../../types';
 import { timeAgo } from '../../utils/format';
 import { haptic } from '../../utils/haptics';
 
-const TYPE_CONFIG: Record<
-  NotificationType,
-  { icon: keyof typeof Ionicons.glyphMap; bg: string; color: string }
-> = {
-  application_update: { icon: 'document-text', bg: colors.tintSoft, color: colors.tint },
-  job_match: { icon: 'film', bg: colors.greenSoft, color: colors.green },
-  message: { icon: 'chatbubble', bg: colors.tintSoft, color: colors.tint },
-  profile_view: { icon: 'eye', bg: colors.orangeSoft, color: colors.orange },
-  favorite: { icon: 'heart', bg: colors.pinkSoft, color: colors.pink },
-  callback: { icon: 'star', bg: colors.orangeSoft, color: colors.orange },
-};
+function getTypeConfig(
+  colors: ColorTokens,
+): Record<NotificationType, { icon: keyof typeof Ionicons.glyphMap; bg: string; color: string }> {
+  return {
+    application_update: { icon: 'document-text', bg: colors.tintSoft, color: colors.tint },
+    job_match: { icon: 'film', bg: colors.greenSoft, color: colors.green },
+    message: { icon: 'chatbubble', bg: colors.tintSoft, color: colors.tint },
+    profile_view: { icon: 'eye', bg: colors.orangeSoft, color: colors.orange },
+    favorite: { icon: 'heart', bg: colors.pinkSoft, color: colors.pink },
+    callback: { icon: 'star', bg: colors.orangeSoft, color: colors.orange },
+  };
+}
 
 interface NotificationSection {
   title: string;
@@ -37,6 +38,9 @@ function NotificationRow({
   index: number;
   onPress: (item: AppNotification) => void;
 }) {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
+  const TYPE_CONFIG = useMemo(() => getTypeConfig(colors), [colors]);
   const config = TYPE_CONFIG[item.type];
   return (
     <Animated.View entering={FadeInDown.delay(index * 40)}>
@@ -62,6 +66,8 @@ function NotificationRow({
 }
 
 export function NotificationsScreen({ navigation }: RootScreenProps<'Notifications'>) {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   const dispatch = useAppDispatch();
   const { items, status, error } = useAppSelector((state) => state.notifications);
 
@@ -87,7 +93,7 @@ export function NotificationsScreen({ navigation }: RootScreenProps<'Notificatio
           </PressableScale>
         ) : null,
     });
-  }, [navigation, dispatch, unreadCount]);
+  }, [navigation, dispatch, unreadCount, styles]);
 
   const sections = useMemo<NotificationSection[]>(() => {
     const sorted = [...items].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
@@ -159,7 +165,8 @@ export function NotificationsScreen({ navigation }: RootScreenProps<'Notificatio
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ColorTokens, type: TypeTokens, shadows: Record<string, ViewStyle>) {
+  return StyleSheet.create({
   listContent: {
     paddingHorizontal: spacing.l,
     paddingTop: spacing.l,
@@ -238,4 +245,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-});
+  });
+}

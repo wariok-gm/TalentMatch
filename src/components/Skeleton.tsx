@@ -6,7 +6,7 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import { colors, radius } from '../theme';
+import { radius, useTheme } from '../theme';
 
 interface Props {
   width?: DimensionValue;
@@ -17,6 +17,7 @@ interface Props {
 
 /** Pulsing skeleton block. Compose these into per-screen skeleton layouts. */
 export function Skeleton({ width = '100%', height = 16, borderRadius = radius.s, style }: Props) {
+  const { colors } = useTheme();
   const pulse = useSharedValue(0.45);
 
   useEffect(() => {

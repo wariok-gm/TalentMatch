@@ -1,9 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { DefaultTheme, NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { BlurView } from 'expo-blur';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { Badge } from '../components';
 import { DiscoverScreen } from '../features/discover/DiscoverScreen';
@@ -20,24 +20,12 @@ import { MyProfileScreen } from '../features/profile/MyProfileScreen';
 import { SearchScreen } from '../features/search/SearchScreen';
 import { TalentProfileScreen } from '../features/talent/TalentProfileScreen';
 import { useAppSelector } from '../store/hooks';
-import { colors } from '../theme';
+import { useTheme } from '../theme';
 import { navigationIntegration } from '../utils/monitoring';
 import { RootStackParamList, TabParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
-
-const navTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: colors.bg,
-    card: colors.card,
-    text: colors.label,
-    primary: colors.tint,
-    border: colors.separator,
-  },
-};
 
 const TAB_ICONS: Record<keyof TabParamList, [keyof typeof Ionicons.glyphMap, keyof typeof Ionicons.glyphMap]> = {
   Discover: ['sparkles-outline', 'sparkles'],
@@ -48,6 +36,7 @@ const TAB_ICONS: Record<keyof TabParamList, [keyof typeof Ionicons.glyphMap, key
 };
 
 function Tabs() {
+  const { colors, scheme } = useTheme();
   const inboxUnread = useAppSelector((state) =>
     Object.values(state.inbox.conversations).reduce((sum, c) => sum + c.unread, 0),
   );
@@ -58,11 +47,11 @@ function Tabs() {
         headerShown: false,
         tabBarActiveTintColor: colors.label,
         tabBarInactiveTintColor: colors.tertiaryLabel,
-        tabBarStyle: styles.tabBar,
+        tabBarStyle: [styles.tabBar, { borderTopColor: colors.hairline }],
         tabBarLabelStyle: styles.tabLabel,
         tabBarBackground: () =>
           Platform.OS === 'ios' ? (
-            <BlurView intensity={80} tint="extraLight" style={StyleSheet.absoluteFill} />
+            <BlurView intensity={80} tint={scheme === 'dark' ? 'dark' : 'extraLight'} style={StyleSheet.absoluteFill} />
           ) : (
             <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.glass }]} />
           ),
@@ -92,6 +81,23 @@ function Tabs() {
 
 export function RootNavigator() {
   const containerRef = useNavigationContainerRef();
+  const { colors, scheme } = useTheme();
+
+  const navTheme = useMemo(() => {
+    const base = scheme === 'dark' ? DarkTheme : DefaultTheme;
+    return {
+      ...base,
+      colors: {
+        ...base.colors,
+        background: colors.bg,
+        card: colors.card,
+        text: colors.label,
+        primary: colors.tint,
+        border: colors.separator,
+      },
+    };
+  }, [colors, scheme]);
+
   return (
     <NavigationContainer
       ref={containerRef}
@@ -152,7 +158,6 @@ const styles = StyleSheet.create({
   tabBar: {
     position: 'absolute',
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.hairline,
     backgroundColor: 'transparent',
     elevation: 0,
   },

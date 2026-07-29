@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import Animated, { FadeInDown, ZoomIn } from 'react-native-reanimated';
-import { colors, radius, shadows, spacing, type } from '../../theme';
+import { ColorTokens, radius, spacing, TypeTokens, useTheme } from '../../theme';
 import { ApplicationStatus } from '../../types';
 
 const STAGES: { key: ApplicationStatus; label: string }[] = [
@@ -18,6 +18,8 @@ interface Props {
 
 /** Filled/pending dot progress for an application's review pipeline. */
 export function StatusTimeline({ status, style }: Props) {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   const current = STAGES.findIndex((s) => s.key === status);
 
   return (
@@ -70,7 +72,8 @@ export function StatusTimeline({ status, style }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ColorTokens, type: TypeTokens, shadows: Record<string, ViewStyle>) {
+  return StyleSheet.create({
   card: {
     backgroundColor: colors.card,
     borderRadius: radius.xl,
@@ -130,4 +133,5 @@ const styles = StyleSheet.create({
     color: colors.tint,
     fontWeight: '700',
   },
-});
+  });
+}

@@ -1,7 +1,7 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useMemo } from 'react';
+import { StyleSheet, Text, View, ViewStyle } from 'react-native';
 import Animated, { FadeInUp } from 'react-native-reanimated';
-import { colors, radius, shadows, spacing, type } from '../../theme';
+import { ColorTokens, radius, spacing, TypeTokens, useTheme } from '../../theme';
 import { Message } from '../../types';
 
 interface Props {
@@ -11,6 +11,8 @@ interface Props {
 }
 
 export function MessageBubble({ message, showStatus = false }: Props) {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   const mine = message.fromMe;
   return (
     <Animated.View
@@ -29,7 +31,8 @@ export function MessageBubble({ message, showStatus = false }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ColorTokens, type: TypeTokens, shadows: Record<string, ViewStyle>) {
+  return StyleSheet.create({
   row: {
     marginVertical: 3,
     maxWidth: '78%',
@@ -73,4 +76,5 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
     marginRight: spacing.xs,
   },
-});
+  });
+}

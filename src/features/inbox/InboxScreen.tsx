@@ -1,12 +1,12 @@
-import React, { useEffect, useRef } from 'react';
-import { FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { FlatList, RefreshControl, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Avatar, Badge, EmptyState, ErrorView, PressableScale, SkeletonRow } from '../../components';
 import { TabScreenProps } from '../../navigation/types';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { loadInbox } from '../../store/slices/inboxSlice';
-import { colors, radius, shadows, spacing, type } from '../../theme';
+import { ColorTokens, radius, spacing, TypeTokens, useTheme } from '../../theme';
 import { Conversation } from '../../types';
 import { timeAgo } from '../../utils/format';
 import { TALENT_BY_ID } from './talentLookup';
@@ -22,6 +22,8 @@ function ConversationRow({
   index: number;
   onPress: () => void;
 }) {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   const talent = TALENT_BY_ID.get(conversation.talentId);
   if (!talent) return null;
   const unread = conversation.unread > 0;
@@ -56,6 +58,8 @@ function ConversationRow({
 
 export function InboxScreen({ navigation }: TabScreenProps<'Inbox'>) {
   const insets = useSafeAreaInsets();
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   const dispatch = useAppDispatch();
   const { conversations, order, status, error } = useAppSelector((state) => state.inbox);
 
@@ -132,7 +136,8 @@ export function InboxScreen({ navigation }: TabScreenProps<'Inbox'>) {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ColorTokens, type: TypeTokens, shadows: Record<string, ViewStyle>) {
+  return StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.bg,
@@ -197,4 +202,5 @@ const styles = StyleSheet.create({
   time: {
     ...type.caption,
   },
-});
+  });
+}

@@ -1,9 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
-import { FlatList, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import React, { useMemo } from 'react';
+import { FlatList, StyleSheet, Text, useWindowDimensions, View, ViewStyle } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { GradientPhoto, PressableScale, RatingStars, SectionHeader } from '../../components';
-import { colors, radius, shadows, spacing, type } from '../../theme';
+import { radius, spacing, useTheme } from '../../theme';
+import type { ColorTokens, TypeTokens } from '../../theme';
 import { Talent } from '../../types';
 import { ROLE_ICONS } from './TalentCard';
 
@@ -15,6 +16,8 @@ interface Props {
 /** Horizontal snap carousel of featured talents — wide gradient cards. */
 export function FeaturedCarousel({ talents, onPressTalent }: Props) {
   const { width } = useWindowDimensions();
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   const cardWidth = width - spacing.xl * 2 - 36;
 
   if (talents.length === 0) return null;
@@ -73,7 +76,8 @@ export function FeaturedCarousel({ talents, onPressTalent }: Props) {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ColorTokens, type: TypeTokens, shadows: Record<string, ViewStyle>) {
+  return StyleSheet.create({
   container: {
     marginBottom: spacing.m,
   },
@@ -137,4 +141,5 @@ const styles = StyleSheet.create({
     ...type.subheadBold,
     flexShrink: 1,
   },
-});
+  });
+}

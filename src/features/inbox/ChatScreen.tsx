@@ -21,7 +21,7 @@ import {
   receiveAutoReply,
   sendMessage,
 } from '../../store/slices/inboxSlice';
-import { colors, radius, spacing, type } from '../../theme';
+import { ColorTokens, radius, spacing, TypeTokens, useTheme } from '../../theme';
 import { Message } from '../../types';
 import { timeAgo } from '../../utils/format';
 import { haptic } from '../../utils/haptics';
@@ -35,6 +35,8 @@ const EMPTY_MESSAGES: Message[] = [];
 
 export function ChatScreen({ route, navigation }: RootScreenProps<'Chat'>) {
   const { conversationId } = route.params;
+  const { colors, type } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type), [colors, type]);
   const dispatch = useAppDispatch();
   const insets = useSafeAreaInsets();
   const headerHeight = useHeaderHeight();
@@ -145,7 +147,8 @@ export function ChatScreen({ route, navigation }: RootScreenProps<'Chat'>) {
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ColorTokens, type: TypeTokens) {
+  return StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.bg,
@@ -195,4 +198,5 @@ const styles = StyleSheet.create({
   sendButtonDisabled: {
     opacity: 0.35,
   },
-});
+  });
+}

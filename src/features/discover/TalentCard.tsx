@@ -1,9 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useMemo } from 'react';
+import { StyleSheet, Text, View, ViewStyle } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Avatar, GradientPhoto, HeartButton, PressableScale, RatingStars } from '../../components';
-import { colors, radius, shadows, spacing, type } from '../../theme';
+import { ColorTokens, radius, spacing, TypeTokens, useTheme } from '../../theme';
 import { Talent, TalentRole } from '../../types';
 import { formatRate } from '../../utils/format';
 
@@ -25,6 +25,8 @@ interface Props {
 }
 
 export function TalentCard({ talent, index, favorite, onPress, onToggleFavorite }: Props) {
+  const { colors, type, shadows } = useTheme();
+  const styles = useMemo(() => createStyles(colors, type, shadows), [colors, type, shadows]);
   return (
     <Animated.View entering={FadeInDown.delay(Math.min(index, 8) * 40).springify().damping(18)}>
       <PressableScale scaleTo={0.97} onPress={onPress} style={styles.card}>
@@ -85,7 +87,8 @@ export function TalentCard({ talent, index, favorite, onPress, onToggleFavorite 
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(colors: ColorTokens, type: TypeTokens, shadows: Record<string, ViewStyle>) {
+  return StyleSheet.create({
   card: {
     backgroundColor: colors.card,
     borderRadius: radius.xxl,
@@ -177,4 +180,5 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.secondaryLabel,
   },
-});
+  });
+}

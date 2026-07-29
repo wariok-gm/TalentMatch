@@ -1,0 +1,36 @@
+# E2E smoke flow: discover -> favorite -> apply -> verify notification.
+# Requires a dev build (Maestro cannot deep-link through Expo Go reliably):
+#   npx expo run:ios   (or: eas build --profile development)
+#   maestro test .maestro/smoke.yml
+appId: com.wornbeaversteam.talentmatch
+---
+- launchApp
+- assertVisible: 'Discover'
+
+# Open the first talent card and favorite them
+- tapOn:
+    text: 'Actor'
+- tapOn:
+    text: 'All'
+- scroll
+- tapOn:
+    id: 'talent-card-0'
+    optional: true
+
+# Castings: open the first job and apply
+- tapOn: 'Castings'
+- assertVisible: 'Castings'
+- scroll
+- tapOn:
+    text: 'Apply now'
+    optional: true
+- inputText: 'Available all of August, reel on request.'
+- tapOn: 'Submit application'
+- assertVisible: 'Application sent'
+
+# The fake pipeline should raise a notification
+- tapOn: 'Discover'
+- tapOn:
+    id: 'notifications-bell'
+    optional: true
+- assertVisible: 'Application received'

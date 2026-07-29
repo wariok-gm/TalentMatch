@@ -1,5 +1,7 @@
 # TalentMatch
 
+[![CI](https://github.com/wariok-gm/TalentMatch/actions/workflows/ci.yml/badge.svg)](https://github.com/wariok-gm/TalentMatch/actions/workflows/ci.yml)
+
 An iOS-26-style **mock casting app** built with Expo + TypeScript + Redux Toolkit. No backend by design — every talent, casting call, chat, and notification is generated locally with a seeded PRNG. Photos are curated [Pexels](https://www.pexels.com) images served straight from their CDN, with gradient placeholders/fallbacks so the app stays fully usable offline.
 
 Built as a design-inspiration playground: liquid-glass surfaces, skeleton shimmer loading, optimistic UI everywhere, spring physics, and haptics.
